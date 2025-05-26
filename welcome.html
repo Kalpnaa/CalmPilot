@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CalmPilot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #fcf9f6;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    /* Animated floating pastel balls */
+    .corner {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.3;
+      z-index: 0;
+      animation: float 8s ease-in-out infinite alternate;
+    }
+
+    .top-left {
+      background: #f7cfd1;
+      top: -100px;
+      left: -100px;
+    }
+
+    .bottom-right {
+      background: #cfe8f7;
+      bottom: -100px;
+      right: -100px;
+      animation-delay: 2s;
+    }
+
+    @keyframes float {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(30px, 30px); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #222;
+      margin: 1rem 0 0.5rem;
+    }
+
+    p {
+      font-size: 1rem;
+      color: #555;
+      margin-bottom: 1rem;
+    }
+
+    .quote {
+      font-style: italic;
+      color: #666;
+      margin-bottom: 1.5rem;
+    }
+
+    .steps {
+      font-size: 0.95rem;
+      color: #444;
+      margin-bottom: 2rem;
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+      max-width: 320px;
+      width: 100%;
+      text-decoration:none;
+    }
+
+    .btn.green {
+      background-color: #dff1eb;
+      color: #222;
+    }
+
+    .btn.green:hover {
+      background-color: #c6e7db;
+    }
+
+    .btn.pink {
+      background-color: #f6dddd;
+      color: #222;
+    }
+
+    .btn.pink:hover {
+      background-color: #eecaca;
+    }
+  </style>
+</head>
+<body>
+  <div class="corner top-left"></div>
+  <div class="corner bottom-right"></div>
+
+  <div class="container">
+    <lottie-player
+      src="https://assets7.lottiefiles.com/packages/lf20_3vbOcw.json"
+      background="transparent"
+      speed="1"
+      style="width: 200px; height: 200px; margin: auto;"
+      loop
+      autoplay>
+    </lottie-player>
+
+    <h1>CalmPilot</h1>
+    <p>Your Daily Auto-Pilot for Calm</p>
+    <p class="quote">"Peace begins with a deep breath."</p>
+
+    <div class="steps">
+      🟢 Step 1: Set Preferences → 🟡 Step 2: Get Suggestions
+    </div>
+
+    <div class="buttons">
+      <button class="btn green"><a href="preferences.html" >Started: Tell Us Your Preferences</a> </button>
+      <button class="btn pink">Already Set Up? Get Your Daily Suggestion</button>
+    </div>
+  </div>
+</body>
+</html>
