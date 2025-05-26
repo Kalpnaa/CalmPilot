@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+    <title>CalmPilot</title>
+    <style>body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+label {
+    display: block;
+    margin: 15px 0 5px;
+    color: #666;
+}
+
+select,
+input[type="radio"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.suggestion-type {
+    margin: 15px 0;
+}
+
+.suggestion-type label {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #5c67f2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.submit-btn:hover {
+    background-color: #4b55b2;
+}
+
+h2 {
+    margin-top: 30px;
+}
+
+p {
+    color: #444;
+}</style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>CalmPilot</h1>
+        
+        <label for="profile">Select Profile</label>
+        <select id="profile">
+            <option value="" disabled selected>Select Profile</option>
+            <option value="profile1">Profile 1</option>
+            <option value="profile2">Profile 2</option>
+        </select>
+
+        <fieldset class="suggestion-type">
+            <legend>Choose Suggestion Type</legend>
+            <label>
+                <input type="radio" name="suggestion" value="meal"> Meal
+            </label>
+            <label>
+                <input type="radio" name="suggestion" value="task"> Task
+            </label>
+            <label>
+                <input type="radio" name="suggestion" value="break"> Break
+            </label>
+        </fieldset>
+
+        <label for="dynamic-suggestions">Dynamic Suggestions</label>
+        <select id="dynamic-suggestions">
+            <option value="" disabled selected>Select Suggestions</option>
+            <option value="suggestion1">Suggestion 1</option>
+            <option value="suggestion2">Suggestion 2</option>
+        </select>
+
+        <button class="submit-btn">Get My CalmPilot Suggestion</button>
+
+        <h2>Suggestion</h2>
+        <p>Mailkep, Suggestion</p>
+        <p>Your of your and tasing ecale suggestible</p>
+        <p>Wiinid cheral ly digestible wour tasik</p>
+        <p>Rocke displas</p>
+    </div>
+</body>
+
+</html>

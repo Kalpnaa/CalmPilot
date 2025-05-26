@@ -5,10 +5,10 @@
   <title>CalmPilot - Preferences Summary</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Inter', sans-serif;
       background: #fcf9f6;
       padding: 2rem;
-      max-width: 900px;
+      max-width: 1000px;
       margin: auto;
     }
     h1 {
@@ -23,27 +23,30 @@
     }
     th, td {
       border: 1px solid #ccc;
-      padding: 0.5rem 1rem;
+      padding: 0.7rem 1rem;
       text-align: left;
     }
     th {
       background-color: #f4d8d8;
     }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
   </style>
 </head>
 <body>
-  <h1>CalmPilot: Submitted Preferences Summary</h1>
+  <h1>CalmPilot: Submitted Preferences</h1>
+
   <table id="responsesTable">
     <thead></thead>
     <tbody></tbody>
   </table>
 
-  <!-- PapaParse library for CSV parsing -->
+  <!-- PapaParse library -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script>
-    const SHEET_ID = "1rJpF6mWNW9tKah5Hah4YntT6vp2BU0gNe9vhb1gsdio";
-    const GID = "0"; // First sheet/tab
-    const CSV_URL = `https://docs.google.com/spreadsheets/d/e/2PACX-1vSLcN4jSwhLpUDF6c51GtZ3q2knVvkia-Uwdi_awiPfP6e1MQl2Fd2R1sWKAVVKNVupHEpIJMomuEut/pub?gid=2010009991&single=true&output=csv`;
+    // Replace this with your published CSV URL
+    const CSV_URL = `https://docs.google.com/spreadsheets/d/e/2PACX-1vSLcN4jSwhLpUDF6c51GtZ3q2knVvkia-Uwdi_awiPfP6e1MQl2Fd2R1sWKAVVKNVupHEpIJMomuEut/pub?gid=2010009991&single=true&output=csv`; // <-- Replace this
 
     fetch(CSV_URL)
       .then(response => response.text())
@@ -54,6 +57,7 @@
         const tableHead = document.querySelector("#responsesTable thead");
         const tableBody = document.querySelector("#responsesTable tbody");
 
+        // Create headers
         if (data.length > 0) {
           const headers = Object.keys(data[0]);
           const headerRow = document.createElement("tr");
@@ -64,6 +68,7 @@
           });
           tableHead.appendChild(headerRow);
 
+          // Populate rows
           data.forEach(row => {
             const tr = document.createElement("tr");
             headers.forEach(header => {
@@ -78,9 +83,8 @@
         }
       })
       .catch(error => {
-        console.error("Error fetching sheet data:", error);
-        document.querySelector("#responsesTable tbody").innerHTML =
-          "<tr><td colspan='100%'>Error loading data</td></tr>";
+        console.error("Error fetching CSV:", error);
+        document.getElementById("responsesTable").innerHTML = "<tr><td>Error loading data</td></tr>";
       });
   </script>
 </body>
