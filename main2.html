@@ -1,121 +1,294 @@
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
- 
-    <title>CalmPilot</title>
-    <style>body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-}
-
-.container {
-    max-width: 500px;
-    margin: 50px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-    text-align: center;
-    color: #333;
-}
-
-label {
-    display: block;
-    margin: 15px 0 5px;
-    color: #666;
-}
-
-select,
-input[type="radio"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    font-size: 16px;
-}
-
-.suggestion-type {
-    margin: 15px 0;
-}
-
-.suggestion-type label {
-    display: inline-block;
-    margin-right: 20px;
-}
-
-.submit-btn {
-    width: 100%;
-    padding: 10px;
-    background-color: #5c67f2;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 18px;
-}
-
-.submit-btn:hover {
-    background-color: #4b55b2;
-}
-
-h2 {
-    margin-top: 30px;
-}
-
-p {
-    color: #444;
-}</style>
+    <title>CalmPilot AI Assistant</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        .container { background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 700px; margin: 20px auto; }
+        h1, h2 { color: #333; text-align: center; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        input[type="text"], select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { background-color: #28a745; color: white; padding: 12px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 18px; width: 100%; margin-top: 20px; }
+        button:hover { background-color: #218838; }
+        #suggestionResult, #generalAnswerResult { margin-top: 30px; padding: 20px; border: 1px solid #cce5ff; background-color: #e0f2ff; border-radius: 8px; }
+        #suggestionText { font-size: 1.2em; font-weight: bold; color: #0056b3; margin-bottom: 10px; }
+        #rationaleText { font-size: 0.9em; color: #333; }
+        .details-list { list-style: none; padding: 0; margin-top: 10px; font-size: 0.9em; color: #666;}
+        .details-list li { margin-bottom: 5px; }
+        /* Style for the new General Answer section */
+        #generalAnswerText { white-space: pre-wrap; /* Preserves whitespace and line breaks */
+                             font-size: 1em; color: #333; }
+    </style>
 </head>
-
 <body>
     <div class="container">
-        <h1>CalmPilot</h1>
-        
-        <label for="profile">Select Profile</label>
-        <select id="profile">
-            <option value="" disabled selected>Select Profile</option>
-            <option value="profile1">Profile 1</option>
-            <option value="profile2">Profile 2</option>
-        </select>
+        <h1>CalmPilot AI Assistant</h1>
+        <p style="text-align: center;">Get personalized suggestions and ask anything!</p>
 
-        <fieldset class="suggestion-type">
-            <legend>Choose Suggestion Type</legend>
-            <label>
-                <input type="radio" name="suggestion" value="meal"> Meal
-            </label>
-            <label>
-                <input type="radio" name="suggestion" value="task"> Task
-            </label>
-            <label>
-                <input type="radio" name="suggestion" value="break"> Break
-            </label>
-        </fieldset>
+        <div class="form-group">
+            <label for="userIdSelect">Select Your Profile:</label>
+            <select id="userIdSelect">
+                <option value="">Loading users...</option>
+            </select>
+        </div>
 
-        <label for="dynamic-suggestions">Dynamic Suggestions</label>
-        <select id="dynamic-suggestions">
-            <option value="" disabled selected>Select Suggestions</option>
-            <option value="suggestion1">Suggestion 1</option>
-            <option value="suggestion2">Suggestion 2</option>
-        </select>
+        <h2>Get a Personalized Suggestion</h2>
+        <div class="form-group">
+            <label for="decisionType">What do you need a suggestion for?</label>
+            <select id="decisionType">
+                <option value="meal">Meal</option>
+                <option value="task">Task</option>
+                <option value="break">Break</option>
+            </select>
+        </div>
 
-        <button class="submit-btn">Get My CalmPilot Suggestion</button>
+        <h2>Current Context (Optional)</h2>
+        <div class="form-group">
+            <label for="timeAvailable">Time Available:</label>
+            <select id="timeAvailable">
+                <option value="">-- Select Time --</option>
+                <option value="15 mins">15 mins</option>
+                <option value="30 mins">30 mins</option>
+                <option value="1 hour">1 hour</option>
+                <option value="2 hours">2 hours</option>
+                <option value="More than 2 hours">More than 2 hours</option>
+            </select>
+        </div>
 
-        <h2>Suggestion</h2>
-        <p>Mailkep, Suggestion</p>
-        <p>Your of your and tasing ecale suggestible</p>
-        <p>Wiinid cheral ly digestible wour tasik</p>
-        <p>Rocke displas</p>
+        <div class="form-group">
+            <label for="mood">Mood:</label>
+            <select id="mood">
+                <option value="">-- Select Mood --</option>
+                <option value="happy">Happy</option>
+                <option value="stressed">Stressed</option>
+                <option value="tired">Tired</option>
+                <option value="sad">Sad</option>
+                <option value="angry">Angry</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="energyLevel">Energy Level:</label>
+            <select id="energyLevel">
+                <option value="">-- Select Energy Level --</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="weather">Weather:</label>
+            <select id="weather">
+                <option value="">-- Select Weather --</option>
+                <option value="sunny">Sunny</option>
+                <option value="rainy">Rainy</option>
+                <option value="cloudy">Cloudy</option>
+                <option value="cold">Cold</option>
+                <option value="hot">Hot</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="feeling">Feeling:</label>
+            <select id="feeling">
+                <option value="">-- Select Feeling --</option>
+                <option value="productive">Productive</option>
+                <option value="relaxed">Relaxed</option>
+                <option value="anxious">Anxious</option>
+                <option value="stressed">Stressed</option>
+                <option value="creative">Creative</option>
+            </select>
+        </div>
+
+        <button id="getSuggestionBtn">Get My CalmPilot Suggestion</button>
+
+        <div id="suggestionResult" style="display: none;">
+            <h2>Your Suggestion:</h2>
+            <p id="suggestionText"></p>
+            <p id="rationaleText"></p>
+            <ul id="suggestionDetails" class="details-list"></ul>
+        </div>
+
+        <hr style="margin: 40px 0;"> <h2>Ask Me Anything</h2>
+        <div class="form-group">
+            <label for="generalQuestionInput">Your Question:</label>
+            <textarea id="generalQuestionInput" rows="4" placeholder="e.g., What kind of trousers will match a white top?"></textarea>
+        </div>
+        <button id="askAiBtn">Ask CalmPilot AI</button>
+
+        <div id="generalAnswerResult" style="display: none;">
+            <h2>AI's Answer:</h2>
+            <p id="generalAnswerText"></p>
+        </div>
+
     </div>
-</body>
 
+    <script>
+        const userIdSelect = document.getElementById('userIdSelect');
+        const decisionTypeSelect = document.getElementById('decisionType');
+        const getSuggestionBtn = document.getElementById('getSuggestionBtn');
+        const suggestionResultDiv = document.getElementById('suggestionResult');
+        const suggestionText = document.getElementById('suggestionText');
+        const rationaleText = document.getElementById('rationaleText');
+        const suggestionDetailsList = document.getElementById('suggestionDetails');
+
+        // NEW Elements for General Question
+        const generalQuestionInput = document.getElementById('generalQuestionInput');
+        const askAiBtn = document.getElementById('askAiBtn');
+        const generalAnswerResultDiv = document.getElementById('generalAnswerResult');
+        const generalAnswerText = document.getElementById('generalAnswerText');
+
+
+        // Function to load user IDs dynamically (remains the same)
+        async function loadUserIds() {
+            try {
+                const response = await fetch('http://localhost:8000/get_all_user_ids');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const userIds = await response.json();
+
+                userIdSelect.innerHTML = '<option value="">-- Select User --</option>'; // Clear existing options
+                userIds.forEach(id => {
+                    const option = document.createElement('option');
+                    option.value = id;
+                    option.textContent = id;
+                    userIdSelect.appendChild(option);
+                });
+
+                // Select 'user_a' by default if it exists
+                if (userIds.includes('user_a')) {
+                    userIdSelect.value = 'user_a';
+                } else if (userIds.length > 0) {
+                    // Otherwise, select the first available user
+                    userIdSelect.value = userIds[0];
+                }
+
+
+            } catch (error) {
+                console.error('Error loading user IDs:', error);
+                userIdSelect.innerHTML = '<option value="">Error loading users</option>';
+                alert('Could not load user profiles. Please ensure your FastAPI backend is running.');
+            }
+        }
+
+        // Call loadUserIds when the page loads
+        document.addEventListener('DOMContentLoaded', loadUserIds);
+
+
+        // Event listener for getting personalized suggestions (existing, with slight modification)
+        getSuggestionBtn.addEventListener('click', async () => {
+            const userId = userIdSelect.value;
+            const decisionType = decisionTypeSelect.value;
+            const context = {
+                time_available: document.getElementById('timeAvailable').value || null,
+                mood: document.getElementById('mood').value || null,
+                energy_level: document.getElementById('energyLevel').value || null,
+                weather: document.getElementById('weather').value || null,
+                feeling: document.getElementById('feeling').value || null,
+            };
+
+            if (!userId) {
+                alert('Please select a User Profile!');
+                return;
+            }
+
+            // Hide general answer result if visible
+            generalAnswerResultDiv.style.display = 'none'; 
+
+            try {
+                const response = await fetch('http://localhost:8000/get_suggestion', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user_id: userId, decision_type: decisionType, context: context })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    suggestionResultDiv.style.display = 'block';
+                    suggestionText.textContent = data.suggestion;
+                    rationaleText.textContent = data.rationale;
+                    
+                    suggestionDetailsList.innerHTML = ''; // Clear previous details
+                    if (data.details) {
+                        const keysToSkip = ['suggestion_name', 'rationale', 'decision_type'];
+
+                        for (const key in data.details) {
+                            if (Object.hasOwnProperty.call(data.details, key) && data.details[key] !== null) {
+                                if (!keysToSkip.includes(key)) {
+                                    const listItem = document.createElement('li');
+                                    let value = data.details[key];
+                                    if (Array.isArray(value)) {
+                                        value = value.join(', ');
+                                    }
+                                    listItem.textContent = `${key.replace(/_/g, ' ')}: ${value}`;
+                                    suggestionDetailsList.appendChild(listItem);
+                                }
+                            }
+                        }
+                    }
+
+                } else {
+                    alert(`Error: ${data.detail || 'Could not get suggestion.'}`);
+                    suggestionResultDiv.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Network or server error:', error);
+                alert('Network error: Could not reach the server. Please ensure your FastAPI backend is running.');
+                suggestionResultDiv.style.display = 'none';
+            }
+        });
+
+        // NEW Event Listener: For general questions
+        askAiBtn.addEventListener('click', async () => {
+            const userId = userIdSelect.value;
+            const queryText = generalQuestionInput.value.trim();
+
+            if (!userId) {
+                alert('Please select a User Profile before asking a question!');
+                return;
+            }
+
+            if (!queryText) {
+                alert('Please enter your question!');
+                return;
+            }
+
+            // Hide suggestion result if visible
+            suggestionResultDiv.style.display = 'none';
+
+            try {
+                // Show a loading message
+                generalAnswerResultDiv.style.display = 'block';
+                generalAnswerText.textContent = 'CalmPilot AI is thinking...';
+                
+                const response = await fetch('http://localhost:8000/ask_ai', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user_id: userId, query_text: queryText })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    generalAnswerText.textContent = data.answer; // Display the AI's plain text answer
+                } else {
+                    generalAnswerText.textContent = `Error: ${data.detail || 'Could not get an answer.'}`;
+                }
+            } catch (error) {
+                console.error('Network or server error:', error);
+                generalAnswerText.textContent = 'Network error: Could not reach the server. Please ensure your FastAPI backend is running.';
+            }
+        });
+    </script>
+</body>
 </html>
