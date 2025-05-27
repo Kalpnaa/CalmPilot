@@ -42,26 +42,64 @@
         </div>
 
         <h2>Current Context (Optional)</h2>
-        <div class="form-group">
-            <label for="timeAvailable">Time Available:</label>
-            <input type="text" id="timeAvailable" placeholder="e.g., 30 mins, 1 hour">
-        </div>
-        <div class="form-group">
-            <label for="mood">Mood:</label>
-            <input type="text" id="mood" placeholder="e.g., happy, stressed, tired">
-        </div>
-        <div class="form-group">
-            <label for="energyLevel">Energy Level:</label>
-            <input type="text" id="energyLevel" placeholder="e.g., high, medium, low">
-        </div>
-        <div class="form-group">
-            <label for="weather">Weather:</label>
-            <input type="text" id="weather" placeholder="e.g., sunny, rainy, cold">
-        </div>
-        <div class="form-group">
-            <label for="feeling">Feeling:</label>
-            <input type="text" id="feeling" placeholder="e.g., productive, relaxed, stressed">
-        </div>
+<div class="form-group">
+    <label for="timeAvailable">Time Available:</label>
+    <select id="timeAvailable">
+        <option value="">-- Select Time --</option>
+        <option value="15 mins">15 mins</option>
+        <option value="30 mins">30 mins</option>
+        <option value="1 hour">1 hour</option>
+        <option value="2 hours">2 hours</option>
+        <option value="More than 2 hours">More than 2 hours</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="mood">Mood:</label>
+    <select id="mood">
+        <option value="">-- Select Mood --</option>
+        <option value="happy">Happy</option>
+        <option value="stressed">Stressed</option>
+        <option value="tired">Tired</option>
+        <option value="sad">Sad</option>
+        <option value="angry">Angry</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="energyLevel">Energy Level:</label>
+    <select id="energyLevel">
+        <option value="">-- Select Energy Level --</option>
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="weather">Weather:</label>
+    <select id="weather">
+        <option value="">-- Select Weather --</option>
+        <option value="sunny">Sunny</option>
+        <option value="rainy">Rainy</option>
+        <option value="cloudy">Cloudy</option>
+        <option value="cold">Cold</option>
+        <option value="hot">Hot</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="feeling">Feeling:</label>
+    <select id="feeling">
+        <option value="">-- Select Feeling --</option>
+        <option value="productive">Productive</option>
+        <option value="relaxed">Relaxed</option>
+        <option value="anxious">Anxious</option>
+        <option value="stressed">Stressed</option>
+        <option value="creative">Creative</option>
+    </select>
+</div>
+
 
         <button id="getSuggestionBtn">Get My CalmPilot Suggestion</button>
 
