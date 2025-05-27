@@ -191,15 +191,22 @@
                     
                     suggestionDetailsList.innerHTML = ''; // Clear previous details
                     if (data.details) {
+                        // Define keys to skip
+                        const keysToSkip = ['suggestion_name', 'rationale', 'decision_type'];
+
                         for (const key in data.details) {
                             if (Object.hasOwnProperty.call(data.details, key) && data.details[key] !== null) {
-                                const listItem = document.createElement('li');
-                                let value = data.details[key];
-                                if (Array.isArray(value)) {
-                                    value = value.join(', '); // Join array values for display
+                                // Only append if the key is NOT in keysToSkip
+                                if (!keysToSkip.includes(key)) { // <--- NEW CONDITION HERE
+                                    const listItem = document.createElement('li');
+                                    let value = data.details[key];
+                                    if (Array.isArray(value)) {
+                                        value = value.join(', '); // Join array values for display
+                                    }
+                                    // Make key more readable by replacing underscores
+                                    listItem.textContent = `${key.replace(/_/g, ' ')}: ${value}`;
+                                    suggestionDetailsList.appendChild(listItem);
                                 }
-                                listItem.textContent = `${key.replace(/_/g, ' ')}: ${value}`;
-                                suggestionDetailsList.appendChild(listItem);
                             }
                         }
                     }
