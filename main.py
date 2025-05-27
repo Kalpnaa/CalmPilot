@@ -84,7 +84,7 @@ class CustomFormPreferenceData(BaseModel):
     break_pref_location: Optional[str] = None
 
 # --- LLM Integration Configuration ---
-genai.configure(api_key="AIzaSyDrKYV03rpLoBfII1R60QQ7eS1W2khdRWQ") 
+genai.configure(api_key="") 
 
 # Initialize the Gemini model to be used for generating suggestions
 MODEL_NAME = 'models/gemini-1.5-flash-latest'
