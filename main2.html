@@ -13,17 +13,20 @@
         input[type="text"], select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
         button { background-color: #28a745; color: white; padding: 12px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 18px; width: 100%; margin-top: 20px; }
         button:hover { background-color: #218838; }
-        #suggestionResult { margin-top: 30px; padding: 20px; border: 1px solid #cce5ff; background-color: #e0f2ff; border-radius: 8px; }
+        #suggestionResult, #generalAnswerResult { margin-top: 30px; padding: 20px; border: 1px solid #cce5ff; background-color: #e0f2ff; border-radius: 8px; }
         #suggestionText { font-size: 1.2em; font-weight: bold; color: #0056b3; margin-bottom: 10px; }
         #rationaleText { font-size: 0.9em; color: #333; }
         .details-list { list-style: none; padding: 0; margin-top: 10px; font-size: 0.9em; color: #666;}
         .details-list li { margin-bottom: 5px; }
+        /* Style for the new General Answer section */
+        #generalAnswerText { white-space: pre-wrap; /* Preserves whitespace and line breaks */
+                             font-size: 1em; color: #333; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>CalmPilot AI Assistant</h1>
-        <p style="text-align: center;">Get personalized suggestions for your day.</p>
+        <p style="text-align: center;">Get personalized suggestions and ask anything!</p>
 
         <div class="form-group">
             <label for="userIdSelect">Select Your Profile:</label>
@@ -32,6 +35,7 @@
             </select>
         </div>
 
+        <h2>Get a Personalized Suggestion</h2>
         <div class="form-group">
             <label for="decisionType">What do you need a suggestion for?</label>
             <select id="decisionType">
@@ -42,64 +46,63 @@
         </div>
 
         <h2>Current Context (Optional)</h2>
-<div class="form-group">
-    <label for="timeAvailable">Time Available:</label>
-    <select id="timeAvailable">
-        <option value="">-- Select Time --</option>
-        <option value="15 mins">15 mins</option>
-        <option value="30 mins">30 mins</option>
-        <option value="1 hour">1 hour</option>
-        <option value="2 hours">2 hours</option>
-        <option value="More than 2 hours">More than 2 hours</option>
-    </select>
-</div>
+        <div class="form-group">
+            <label for="timeAvailable">Time Available:</label>
+            <select id="timeAvailable">
+                <option value="">-- Select Time --</option>
+                <option value="15 mins">15 mins</option>
+                <option value="30 mins">30 mins</option>
+                <option value="1 hour">1 hour</option>
+                <option value="2 hours">2 hours</option>
+                <option value="More than 2 hours">More than 2 hours</option>
+            </select>
+        </div>
 
-<div class="form-group">
-    <label for="mood">Mood:</label>
-    <select id="mood">
-        <option value="">-- Select Mood --</option>
-        <option value="happy">Happy</option>
-        <option value="stressed">Stressed</option>
-        <option value="tired">Tired</option>
-        <option value="sad">Sad</option>
-        <option value="angry">Angry</option>
-    </select>
-</div>
+        <div class="form-group">
+            <label for="mood">Mood:</label>
+            <select id="mood">
+                <option value="">-- Select Mood --</option>
+                <option value="happy">Happy</option>
+                <option value="stressed">Stressed</option>
+                <option value="tired">Tired</option>
+                <option value="sad">Sad</option>
+                <option value="angry">Angry</option>
+            </select>
+        </div>
 
-<div class="form-group">
-    <label for="energyLevel">Energy Level:</label>
-    <select id="energyLevel">
-        <option value="">-- Select Energy Level --</option>
-        <option value="high">High</option>
-        <option value="medium">Medium</option>
-        <option value="low">Low</option>
-    </select>
-</div>
+        <div class="form-group">
+            <label for="energyLevel">Energy Level:</label>
+            <select id="energyLevel">
+                <option value="">-- Select Energy Level --</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+            </select>
+        </div>
 
-<div class="form-group">
-    <label for="weather">Weather:</label>
-    <select id="weather">
-        <option value="">-- Select Weather --</option>
-        <option value="sunny">Sunny</option>
-        <option value="rainy">Rainy</option>
-        <option value="cloudy">Cloudy</option>
-        <option value="cold">Cold</option>
-        <option value="hot">Hot</option>
-    </select>
-</div>
+        <div class="form-group">
+            <label for="weather">Weather:</label>
+            <select id="weather">
+                <option value="">-- Select Weather --</option>
+                <option value="sunny">Sunny</option>
+                <option value="rainy">Rainy</option>
+                <option value="cloudy">Cloudy</option>
+                <option value="cold">Cold</option>
+                <option value="hot">Hot</option>
+            </select>
+        </div>
 
-<div class="form-group">
-    <label for="feeling">Feeling:</label>
-    <select id="feeling">
-        <option value="">-- Select Feeling --</option>
-        <option value="productive">Productive</option>
-        <option value="relaxed">Relaxed</option>
-        <option value="anxious">Anxious</option>
-        <option value="stressed">Stressed</option>
-        <option value="creative">Creative</option>
-    </select>
-</div>
-
+        <div class="form-group">
+            <label for="feeling">Feeling:</label>
+            <select id="feeling">
+                <option value="">-- Select Feeling --</option>
+                <option value="productive">Productive</option>
+                <option value="relaxed">Relaxed</option>
+                <option value="anxious">Anxious</option>
+                <option value="stressed">Stressed</option>
+                <option value="creative">Creative</option>
+            </select>
+        </div>
 
         <button id="getSuggestionBtn">Get My CalmPilot Suggestion</button>
 
@@ -109,6 +112,19 @@
             <p id="rationaleText"></p>
             <ul id="suggestionDetails" class="details-list"></ul>
         </div>
+
+        <hr style="margin: 40px 0;"> <h2>Ask Me Anything</h2>
+        <div class="form-group">
+            <label for="generalQuestionInput">Your Question:</label>
+            <textarea id="generalQuestionInput" rows="4" placeholder="e.g., What kind of trousers will match a white top?"></textarea>
+        </div>
+        <button id="askAiBtn">Ask CalmPilot AI</button>
+
+        <div id="generalAnswerResult" style="display: none;">
+            <h2>AI's Answer:</h2>
+            <p id="generalAnswerText"></p>
+        </div>
+
     </div>
 
     <script>
@@ -120,7 +136,14 @@
         const rationaleText = document.getElementById('rationaleText');
         const suggestionDetailsList = document.getElementById('suggestionDetails');
 
-        // Function to load user IDs dynamically
+        // NEW Elements for General Question
+        const generalQuestionInput = document.getElementById('generalQuestionInput');
+        const askAiBtn = document.getElementById('askAiBtn');
+        const generalAnswerResultDiv = document.getElementById('generalAnswerResult');
+        const generalAnswerText = document.getElementById('generalAnswerText');
+
+
+        // Function to load user IDs dynamically (remains the same)
         async function loadUserIds() {
             try {
                 const response = await fetch('http://localhost:8000/get_all_user_ids');
@@ -157,6 +180,7 @@
         document.addEventListener('DOMContentLoaded', loadUserIds);
 
 
+        // Event listener for getting personalized suggestions (existing, with slight modification)
         getSuggestionBtn.addEventListener('click', async () => {
             const userId = userIdSelect.value;
             const decisionType = decisionTypeSelect.value;
@@ -172,6 +196,9 @@
                 alert('Please select a User Profile!');
                 return;
             }
+
+            // Hide general answer result if visible
+            generalAnswerResultDiv.style.display = 'none'; 
 
             try {
                 const response = await fetch('http://localhost:8000/get_suggestion', {
@@ -191,19 +218,16 @@
                     
                     suggestionDetailsList.innerHTML = ''; // Clear previous details
                     if (data.details) {
-                        // Define keys to skip
                         const keysToSkip = ['suggestion_name', 'rationale', 'decision_type'];
 
                         for (const key in data.details) {
                             if (Object.hasOwnProperty.call(data.details, key) && data.details[key] !== null) {
-                                // Only append if the key is NOT in keysToSkip
-                                if (!keysToSkip.includes(key)) { // <--- NEW CONDITION HERE
+                                if (!keysToSkip.includes(key)) {
                                     const listItem = document.createElement('li');
                                     let value = data.details[key];
                                     if (Array.isArray(value)) {
-                                        value = value.join(', '); // Join array values for display
+                                        value = value.join(', ');
                                     }
-                                    // Make key more readable by replacing underscores
                                     listItem.textContent = `${key.replace(/_/g, ' ')}: ${value}`;
                                     suggestionDetailsList.appendChild(listItem);
                                 }
@@ -219,6 +243,50 @@
                 console.error('Network or server error:', error);
                 alert('Network error: Could not reach the server. Please ensure your FastAPI backend is running.');
                 suggestionResultDiv.style.display = 'none';
+            }
+        });
+
+        // NEW Event Listener: For general questions
+        askAiBtn.addEventListener('click', async () => {
+            const userId = userIdSelect.value;
+            const queryText = generalQuestionInput.value.trim();
+
+            if (!userId) {
+                alert('Please select a User Profile before asking a question!');
+                return;
+            }
+
+            if (!queryText) {
+                alert('Please enter your question!');
+                return;
+            }
+
+            // Hide suggestion result if visible
+            suggestionResultDiv.style.display = 'none';
+
+            try {
+                // Show a loading message
+                generalAnswerResultDiv.style.display = 'block';
+                generalAnswerText.textContent = 'CalmPilot AI is thinking...';
+                
+                const response = await fetch('http://localhost:8000/ask_ai', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user_id: userId, query_text: queryText })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    generalAnswerText.textContent = data.answer; // Display the AI's plain text answer
+                } else {
+                    generalAnswerText.textContent = `Error: ${data.detail || 'Could not get an answer.'}`;
+                }
+            } catch (error) {
+                console.error('Network or server error:', error);
+                generalAnswerText.textContent = 'Network error: Could not reach the server. Please ensure your FastAPI backend is running.';
             }
         });
     </script>

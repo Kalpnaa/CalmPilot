@@ -66,6 +66,11 @@ class SuggestionRequest(BaseModel):
     decision_type: str # e.g., "meal", "task", "break"
     context: Context # Use the Context model defined above
 
+# NEW: Model for a general text query
+class GeneralQueryRequest(BaseModel):
+    user_id: str # Keep user_id for potential personalization based on preferences
+    query_text: str # The actual question from the user
+
 class CustomFormPreferenceData(BaseModel):
     # Fields matching your preference form inputs
     user_id: str
@@ -84,7 +89,6 @@ genai.configure(api_key="AIzaSyDrKYV03rpLoBfII1R60QQ7eS1W2khdRWQ")
 # Initialize the Gemini model to be used for generating suggestions
 MODEL_NAME = 'models/gemini-1.5-flash-latest'
 model = genai.GenerativeModel(MODEL_NAME)
-
 
 # --- API Endpoints ---
 
@@ -143,45 +147,76 @@ async def get_llm_suggestion(request_data: SuggestionRequest):
             printable_user_prefs[key] = value
 
     # Format options list for the prompt (show name and details)
-    formatted_options = "\n".join([f"- {opt.get('name', 'Unnamed Option')} (Details: {opt})" for opt in options_list])
+    # Updated to show more relevant attributes for LLM
+    formatted_options = "\n".join([
+        f"- {opt.get('name', 'Unnamed Option')} (Time: {opt.get('total_time_minutes', opt.get('estimated_duration_minutes', opt.get('duration_minutes', 'N/A')))} mins, "
+        f"Effort: {opt.get('effort_level', 'N/A')}, "
+        f"Mood Benefit: {', '.join(opt.get('mood_benefit', []))}, "
+        f"Location: {opt.get('location', 'N/A')})"
+        for opt in options_list
+    ])
+
+
+    # The core prompt that guides the LLM's behavior and desired output format
+   # ... [previous code remains unchanged] ...
 
     # The core prompt that guides the LLM's behavior and desired output format
     prompt_template = f"""
-    You are CalmPilot, an intelligent AI assistant specialized in providing personalized well-being suggestions.
-    Your goal is to offer a single, highly relevant {decision_type} suggestion based on the user's preferences and current context.
+You are CalmPilot, a highly intelligent AI assistant focused on enhancing personal well-being through personalized suggestions. Your goal is to provide ONE optimal **{decision_type}** suggestion based on both the **User Preferences** and the **Current Context** — but when there's a conflict, CONTEXT always wins.
 
-    User ID: {user_id}
+---
 
-    User Preferences:
-    {printable_user_prefs}
+🔍 **Prioritization Rules**:
+1. ✅ Always prioritize the **Current Context** over user preferences — especially:
+   - Time constraints
+   - Mood
+   - Energy level
+   - Weather compatibility
 
-    Current Context:
-    {context}
+2. ⏱️ Respect time limits strictly. Only suggest options where:
+   - 'total_time_minutes' (meals)
+   - 'estimated_duration_minutes' (tasks)
+   - 'duration_minutes' (breaks)
+   are **less than or equal to** `time_available`. If no valid options, suggest the closest match *with a warning*.
 
-    Available Options for {decision_type} (choose ONE from or be inspired by these; do NOT make up options if a close match exists. If no good match, state that.):
-    {formatted_options}
+3. 🍽️ For meals:
+   - Match 'cuisine' and 'dietary_tags' with preferences.
+   - Stay within the available time.
 
-    Please provide your suggestion in a structured JSON format. Ensure the 'suggestion_name' is concise and matches one of the 'name' fields from the 'Available Options' if possible, otherwise generate a relevant name.
-    
-    JSON Format Expected:
-    ```json
-    {{
-      "suggestion_name": "...",
-      "rationale": "...",
-      "decision_type": "{decision_type}"
-      // You can add other relevant details from the chosen option here if needed by frontend
-    }}
-    ```
+4. ✅ For tasks:
+   - Match 'effort_level' to 'energy_level'.
+   - Prioritize 'quick_win' if the user is feeling low or unmotivated.
 
-    Example for a break:
-    ```json
-    {{
-      "suggestion_name": "Mindful Breathing (3 mins)",
-      "rationale": "Based on your preference for passive recharge and indoor location, mindful breathing is an excellent quick break to alleviate stress.",
-      "decision_type": "break"
-    }}
-    ```
-    """
+5. 🧘 For breaks:
+   - Match 'activity_level' and 'mood_benefit' with current mood.
+   - Consider 'location' and adjust if weather is bad.
+
+---
+
+👤 **User ID**: {user_id}
+
+📋 **Preferences**:
+{printable_user_prefs}
+
+📍 **Current Context**:
+{context}
+
+---
+
+📚 **Available {decision_type.capitalize()} Options**:
+(Choose exactly ONE. Do NOT invent new ones.)
+{formatted_options}
+
+---
+
+📤 **Respond in JSON only**:
+```json
+{{
+  "suggestion_name": "Option Name",
+  "rationale": "Reason why this option fits CURRENT CONTEXT best",
+  "decision_type": "{decision_type}"
+}}
+"""
 
     print("\n--- Sending Prompt to LLM ---")
     print(prompt_template)
@@ -208,11 +243,11 @@ async def get_llm_suggestion(request_data: SuggestionRequest):
                 if parsed_llm_response.endswith("```"):
                     parsed_llm_response = parsed_llm_response[:-len("```")].strip()
         elif parsed_llm_response.startswith("```"): # General markdown block
-             start_index = parsed_llm_response.find('{')
-             end_index = parsed_llm_response.rfind('}') + 1
-             if start_index != -1 and end_index != -1 and start_index < end_index:
+            start_index = parsed_llm_response.find('{')
+            end_index = parsed_llm_response.rfind('}') + 1
+            if start_index != -1 and end_index != -1 and start_index < end_index:
                 parsed_llm_response = parsed_llm_response[start_index:end_index].strip()
-             else:
+            else:
                 parsed_llm_response = parsed_llm_response[len("```"):].strip()
                 if parsed_llm_response.endswith("```"):
                     parsed_llm_response = parsed_llm_response[:-len("```")].strip()
@@ -244,6 +279,61 @@ async def get_llm_suggestion(request_data: SuggestionRequest):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to get LLM suggestion due to an internal error: {e}"
         )
+
+# NEW ENDPOINT: For general day-to-day questions
+@app.post("/ask_ai")
+async def ask_general_question(request_data: GeneralQueryRequest):
+    """
+    Handles general day-to-day questions using the LLM, optionally
+    considering user preferences for personalization.
+    """
+    user_id = request_data.user_id
+    user_query = request_data.query_text
+
+    # Retrieve user preferences for personalization (optional, but good for context)
+    user_prefs = SIMULATED_USER_PREFERENCES.get(user_id, {})
+    
+    printable_user_prefs = {}
+    for key, value in user_prefs.items():
+        if isinstance(value, list):
+            printable_user_prefs[key] = ", ".join(value)
+        else:
+            printable_user_prefs[key] = value
+
+    # Construct the prompt for the general question
+    # We include user preferences here to allow the LLM to personalize answers
+    prompt_for_general_question = f"""
+    You are CalmPilot, a helpful AI assistant. Answer the following question concisely and directly.
+    If applicable, try to personalize your answer based on the user's preferences, but do not force it.
+    If the question is about personal styling, assume a general sense of fashion and practicality.
+
+    User's Question: {user_query}
+
+    User ID: {user_id}
+    User Preferences (for context, may be empty):
+    {printable_user_prefs}
+
+    Provide your answer in plain text.
+    """
+
+    print("\n--- Sending General Query to LLM ---")
+    print(prompt_for_general_question)
+    print("------------------------------------\n")
+
+    try:
+        response = model.generate_content(prompt_for_general_question)
+        ai_response_text = response.text
+        print(f"--- LLM Raw General Response --- \n{ai_response_text}\n----------------------------------\n")
+        
+        return {"answer": ai_response_text}
+
+    except Exception as e:
+        print(f"Error calling LLM for general question: {e}", file=sys.stderr)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get AI answer due to an internal error: {e}"
+        )
+
 
 @app.post("/receive_preferences_from_form")
 async def receive_preferences_from_form(data: CustomFormPreferenceData):
